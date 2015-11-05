@@ -1,5 +1,11 @@
 var pixieLib = {
-		createCookie: function createCookie (name, value, days) {
+    closestNumber: function closestNumber(arr, search) {
+      var closest = arr.reduce(function (prev, curr) {
+        return (Math.abs(curr - search) < Math.abs(prev - search) ? curr : prev);
+      });
+      return closest;
+    }
+  ,	createCookie: function createCookie (name, value, days) {
 			var expires
 						, domain = window.location.hostname !== 'localhost'
 					? '; domain=' + window.location.hostname
@@ -32,10 +38,28 @@ var pixieLib = {
 			this.createCookie(name, '', -1);
     }
 
-	, isTouchDevice : function isTouchDevice () {
+  , forEach : function forEach (collection, callback, scope) {
+      if (Object.prototype.toString.call(collection) === '[object Object]') {
+        for (var prop in collection) {
+          if (Object.prototype.hasOwnProperty.call(collection, prop)) {
+            callback.call(scope, collection[prop], prop, collection);
+          }
+        }
+      } else {
+        for (var i = 0, len = collection.length; i < len; i++) {
+          callback.call(scope, collection[i], i, collection);
+        }
+      }
+    }
+
+  , isTouchDevice : function isTouchDevice () {
 			return 'ontouchstart' in window // works on most browsers 
         //|| 'onmsgesturechange' in window // works on ie10
         //|| !!('msmaxtouchpoints' in window.navigator)
+    }
+
+  , isArray: function isArray (obj) {
+      return obj.prototype.toString.call( someVar ) === '[object Array]';
     }
 
 	, objSize: function objSize (obj) {
@@ -48,6 +72,11 @@ var pixieLib = {
 			return size;
 		}
 
+  , filereaderSupported : function filereaderSupported() {
+      //All of the stuff we need
+      return (window.File && window.FileReader && window.FileList && window.Blob && window.XMLHttpRequest)
+        ? true : false;
+    }
 	, scrollPos: function scrollPos () {
 			var scrollTop = (window.pageYOffset !== undefined)
 						? window.pageYOffset
