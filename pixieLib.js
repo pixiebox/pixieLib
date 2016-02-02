@@ -52,6 +52,43 @@ var pixieLib = {
       }
     }
 
+  , getClosest : function getClosest (elem, selector) {
+			var firstChar = selector.charAt(0);
+
+			// Get closest match
+			for ( ; elem && elem !== document; elem = elem.parentNode ) {
+
+				// If selector is a class
+				if ( firstChar === '.' ) {
+					if ( elem.className.indexOf( selector.substr(1) ) > -1 ) {
+						return elem;
+					}
+				}
+
+				// If selector is an ID
+				if ( firstChar === '#' ) {
+					if ( elem.id === selector.substr(1) ) {
+						return elem;
+					}
+				} 
+
+				// If selector is a data attribute
+				if ( firstChar === '[' ) {
+					if ( elem.hasAttribute( selector.substr(1, selector.length - 2) ) ) {
+						return elem;
+					}
+				}
+
+				// If selector is a tag
+				if ( elem.tagName.toLowerCase() === selector ) {
+					return elem;
+				}
+
+			}
+
+			return false;
+		}
+
   , isTouchDevice : function isTouchDevice () {
 			return 'ontouchstart' in window // works on most browsers 
         //|| 'onmsgesturechange' in window // works on ie10
@@ -287,4 +324,13 @@ var pixieLib = {
 
 			return time;
 		}
+  , viewport: function viewport() {
+      // real window width, like mediaquery
+      var e = window, a = 'inner';
+      if (!('innerWidth' in window )) {
+        a = 'client';
+        e = document.documentElement || document.body;
+      }
+      return { width : e[ a+'Width' ] , height : e[ a+'Height' ] };
+    }
 };
