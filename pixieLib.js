@@ -125,33 +125,27 @@ var pixieLib = {
 			return [scrollTop, scrollLeft];
 		}
 
-  , offset: function offset (selector, position) {
-			var rect = document.querySelector(selector);
+  , offset: function offset (el, position) {
+			rect = el.getBoundingClientRect();
 
-			if (rect.length) {
-				rect = rect.getBoundingClientRect();
-
-				switch (position) {
-					case 'left':
-						return rect.left; // x position of #world relative to viewport
-					case 'top':
-						return rect.top; // y position of #world relative to viewport
-					default:
-						return 0;
-				}
-				/*
-				rect.left // x position of #world relative to viewport
-				rect.top // y position of #world relative to viewport
-				rect.width // width of #world, including padding and borders
-				rect.height // height of #world, including padding and borders
-				rect.offsetWidth // width of #world - IE8 and below
-				rect.offsetHeight // height of #world - IE8 and below
-				*/
-			} else {
-				console.log('Element is not found.');
+			switch (position) {
+				case 'left':
+					return rect.left; // x position of #world relative to viewport
+				case 'top':
+					return rect.top; // y position of #world relative to viewport
+				default:
+					return 0;
 			}
+			/*
+			rect.left // x position of #world relative to viewport
+			rect.top // y position of #world relative to viewport
+			rect.width // width of #world, including padding and borders
+			rect.height // height of #world, including padding and borders
+			rect.offsetWidth // width of #world - IE8 and below
+			rect.offsetHeight // height of #world - IE8 and below
+			*/
     }
-	, belowthefold: function belowthefold (element, settings) {
+	, belowthefold: function belowthefold (el, settings) {
 			var fold;
 
 			if (settings.container === undefined || settings.container === window) {
@@ -163,10 +157,10 @@ var pixieLib = {
 				fold = this.offset(settings.container, 'top') + document.querySelector(settings.container).height;
 			}
 
-			return fold <= $(element).offset().top - settings.threshold;
+			return fold <= this.offset(el, 'top') - (settings.threshold !== undefined ? settings.threshold : 0);
     }
 
-  , rightoffold: function rightoffold (element, settings) {
+  , rightoffold: function rightoffold (el, settings) {
 			var fold;
 
 			if (settings.container === undefined || settings.container === window) {
@@ -178,10 +172,10 @@ var pixieLib = {
 				fold = this.offset(settings.container, 'left') + document.querySelector(settings.container).width;
 			}
 
-			return fold <= this.offset(element, 'left') - settings.threshold;
+			return fold <= this.offset(el, 'left') - settings.threshold;
 		}
 
-	, abovethetop: function abovethetop (element, settings) {
+	, abovethetop: function abovethetop (el, settings) {
 			var fold;
 
 			if (settings.container === undefined || settings.container === window) {
@@ -190,10 +184,10 @@ var pixieLib = {
 				fold = this.offset(settings.container, 'top');
 			}
 
-			return fold >= this.offset(element, 'top') + settings.threshold  + document.querySelector.height;
+			return fold >= this.offset(el, 'top') + settings.threshold  + document.querySelector.height;
 		}
 
-	, leftofbegin: function leftofbegin (element, settings) {
+	, leftofbegin: function leftofbegin (el, settings) {
 			var fold;
 
 			if (settings.container === undefined || settings.container === window) {
@@ -202,12 +196,12 @@ var pixieLib = {
 				fold = this.offset(settings.container, 'left');
 			}
 
-			return fold >= this.offset(element, 'left') + settings.threshold + document.querySelector(element).width;
+			return fold >= this.offset(el, 'left') + settings.threshold + document.querySelector(el).width;
     }
 
-	, inviewport: function inviewport (element, settings) {
-		 return !this.rightoffold(element, settings) && !this.leftofbegin(element, settings) &&
-						!this.belowthefold(element, settings) && !this.abovethetop(element, settings);
+	, inviewport: function inviewport (el, settings) {
+		 return !this.rightoffold(el, settings) && !this.leftofbegin(el, settings) &&
+						!this.belowthefold(el, settings) && !this.abovethetop(el, settings);
     }
 	, localStorage : {
 			set: function (key, value, expires) {
