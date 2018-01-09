@@ -196,7 +196,7 @@ var pixieLib = {
 				fold = this.offset(settings.container, 'left');
 			}
 
-			return fold >= this.offset(el, 'left') + settings.threshold + document.querySelector(el).width;
+			return fold >= this.offset(el, 'left') + settings.threshold + el.width;
     }
 
 	, inviewport: function inviewport (el, settings) {
@@ -327,4 +327,19 @@ var pixieLib = {
       }
       return { width : e[ a+'Width' ] , height : e[ a+'Height' ] };
     }
+  , debounce: function debounce(func, wait, immediate) {
+	  	// underscore.js debounce
+		var timeout;
+		return function() {
+			var context = this, args = arguments;
+			var later = function() {
+				timeout = null;
+				if (!immediate) func.apply(context, args);
+			};
+			var callNow = immediate && !timeout;
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (callNow) func.apply(context, args);
+		};
+	}
 };
