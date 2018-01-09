@@ -179,7 +179,7 @@ var pixieLib = {
 			var fold;
 
 			if (settings.container === undefined || settings.container === window) {
-				fold = this.scrollPos();
+				fold = this.scrollPos()[0];
 			} else {
 				fold = this.offset(settings.container, 'top');
 			}
